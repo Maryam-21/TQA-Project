@@ -18,8 +18,7 @@ namespace TQA_Project
         public static List<List<string>> valuesOfConditions;
         public static List<List<string>> valuesOfActions;
         public static List<Tuple<List<string>,List<string>>> script;
-        public static List<Tuple<List<string>, List<string>>> decisionTable;
-
+    
 
 
         public Form1()
@@ -30,7 +29,6 @@ namespace TQA_Project
             valuesOfActions = new List<List<string>>();
             valuesOfConditions = new List<List<string>>();
             script = new List<Tuple<List<string>, List<string>>>();
-            decisionTable = new List<Tuple<List<string>, List<string>>>();
         }
 
         private void label1_Click(object sender, EventArgs e)
@@ -96,17 +94,28 @@ namespace TQA_Project
             //replace the one with - 
             for(int i= 0; i< script.Count; i++)
             {
-                for(int j=1; j< script.Count; j++)
+                for(int j=i+1; j< script.Count; j++)
                 {
-                    if (script[i].Item2[0] == script[j].Item2[0])
+                    bool enter = false;
+                    for (int z = 0; z < actions.Count; z++)
                     {
-                        int count = 0; 
-                        int index=-1;
-                        for(int k=0; k< conditions.Count; k++)
+                        if (script[i].Item2[z] != script[j].Item2[z])
+                        {
+                            enter = true;
+                            break;
+                        }
+                    }
+                    if (enter)
+                    {
+                        int count = 0;
+                        int index = -1;
+                        for (int k = 0; k < conditions.Count; k++)
                         {
                             if (script[i].Item1[k] != script[j].Item1[k])
                             {
                                 count++;
+                                if (count > 1)
+                                    break;
                                 index = k;
                             }
                         }
@@ -118,6 +127,9 @@ namespace TQA_Project
                     }
                 }
             }
+            Form2 frm2 = new Form2();
+            frm2.Show();
+            this.Hide();
         }
     }
 }
