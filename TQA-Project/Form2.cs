@@ -25,21 +25,35 @@ namespace TQA_Project
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            tableLayoutPanel1.ColumnCount = 3;
-            tableLayoutPanel1.RowCount = 1;
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 40F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
-            tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 30F));
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "Address" }, 0, 0);
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "Contact No" }, 1, 0);
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "Email ID" }, 2, 0);
+            dataGridView1.Columns.Add("column0", "Conditions");
+            for (int i = 1; i < Form1.script.Count + 1; i++)
+                dataGridView1.Columns.Add("column" + i, "R" + i);
+            for (int i = 1; i < Form1.conditions.Count + 1; i++)
+            {
+                dataGridView1.Rows.Add(Form1.conditions[i - 1]);
+            }
+            dataGridView1.Rows.Add(" ");
+            dataGridView1.Rows.Add("Actions");
+            for (int i = 1; i < Form1.actions.Count + 1; i++)
+            {
+                dataGridView1.Rows.Add(Form1.actions[i - 1]);
+            }
+            
+            for(int i=0; i<Form1.script.Count; i++)
+            {
+                List<string> c = Form1.script[i].Item1.ToList();
+                for (int j = 0; j < c.Count; j++)
+                {
+                    dataGridView1.Rows[j].Cells[i + 1].Value = c[j];
+                }
 
-            tableLayoutPanel1.RowCount = tableLayoutPanel1.RowCount + 1;
-            tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 50F));
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "Street, City, State" }, 0, tableLayoutPanel1.RowCount - 1);
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "888888888888" }, 1, tableLayoutPanel1.RowCount - 1);
-            tableLayoutPanel1.Controls.Add(new Label() { Text = "xxxxxxx@gmail.com" }, 2, tableLayoutPanel1.RowCount - 1);
+                List<string> a = Form1.script[i].Item2.ToList();
+                for(int j=0; j<a.Count; j++)
+                {
+                    dataGridView1.Rows[2+Form1.conditions.Count+j].Cells[i+1].Value = a[j];
+                }
+
+            }
         }
     }
 }

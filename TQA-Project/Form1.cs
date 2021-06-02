@@ -72,61 +72,76 @@ namespace TQA_Project
         private void submit_btn_Click(object sender, EventArgs e)
         {
             string[] values = test_scenario_txt.Text.Split('\n');
-            //script.Add(new Tuple<List<string>, List<string>>(new List<string>(), new List<string>()));
+            
             int c = 0;
             foreach (string v in values)
             {
-                string[] cond = v.Split(',');
+                string[] condsActs = v.Split(':');
+                string[] cond = condsActs[0].Split(',');
                 script.Add(new Tuple<List<string>, List<string>>(new List<string>(), new List<string>()));
-
-                for (int i=0; i<cond.Length-1; i++)
+                for (int i=0; i<cond.Length; i++)
                 {
                     script[c].Item1.Add(cond[i]);
                 }
-                script[c].Item2.Add(cond[cond.Length - 1]);
+                string[] act = condsActs[1].Split(',');
+                for (int i = 0; i < act.Length; i++)
+                {
+                    script[c].Item2.Add(act[i]);
+                }
+                //script[c].Item2.Add(cond[cond.Length - 1]);
                 c++;
             }
-           
+
 
 
             //reduction
             //the idea is to find 2 cols with the same values for all conditions except for one
             //replace the one with - 
-            for(int i= 0; i< script.Count; i++)
+            while (true)
             {
-                for(int j=i+1; j< script.Count; j++)
+                int reduced = 0;
+                for (int i = 0; i < script.Count; i++)
                 {
-                    bool enter = false;
-                    for (int z = 0; z < actions.Count; z++)
+                    for (int j = i + 1; j < script.Count; j++)
                     {
-                        if (script[i].Item2[z] != script[j].Item2[z])
+                        int enter = 0;
+                        for (int z = 0; z < actions.Count; z++)
                         {
-                            enter = true;
-                            break;
-                        }
-                    }
-                    if (enter)
-                    {
-                        int count = 0;
-                        int index = -1;
-                        for (int k = 0; k < conditions.Count; k++)
-                        {
-                            if (script[i].Item1[k] != script[j].Item1[k])
+                            if (script[i].Item2[z] == script[j].Item2[z])
                             {
-                                count++;
-                                if (count > 1)
-                                    break;
-                                index = k;
+                                enter++;
+                               
+                            }
+                           
+                        }
+                        if (enter == actions.Count)
+                        {
+                            int count = 0;
+                            int index = -1;
+                            for (int k = 0; k < conditions.Count; k++)
+                            {
+                                if (script[i].Item1[k] != script[j].Item1[k])
+                                {
+                                    count++;
+                                    if (count > 1)
+                                        break;
+                                    index = k;
+                                }
+                            }
+                            if (count == 1)
+                            {
+                                reduced++;
+                                script.RemoveAt(j);
+                                script[i].Item1[index] = "-";
                             }
                         }
-                        if (count == 1)
-                        {
-                            script.RemoveAt(j);
-                            script[i].Item1[index] = "-";
-                        }
                     }
+                    
                 }
+                if (reduced == 0)
+                    break;
             }
+            
             Form2 frm2 = new Form2();
             frm2.Show();
             this.Hide();
